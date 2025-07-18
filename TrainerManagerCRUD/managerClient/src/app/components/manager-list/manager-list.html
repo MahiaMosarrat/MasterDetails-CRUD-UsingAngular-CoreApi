@@ -1,0 +1,56 @@
+
+<h2>Managers List</h2>
+<p><a routerLink="/create" class="btn btn-outline-primary">Add Manager <i class="fa-regular fa-square-plus"></i></a></p>
+
+<div *ngIf="managers.length>0; else noManagers">
+    
+    <table class="table table-stripped ">
+        <thead>
+            <tr style="text-align: center;">
+                <th>Image</th>
+                <th>Name</th>
+                <th>DOB</th>
+                <th>Contact No</th>
+                <th>Email</th>
+                <th>IsActive?</th>
+                <th>Manager Trainer Assignment</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let manager of managers" style="text-align: center;">
+                <td>
+                    <img [src]="imageUrlBase + manager.imageUrl"
+               alt="{{manager.name}}'s Image"
+               width="60" height="60"
+               style="object-fit: cover; border-radius: 4px;"
+               (error)="manager.imageUrl = 'noimage.png';"> </td>
+       
+                <td>{{manager.name}}</td>
+                <td>{{manager.dob| date:'dd-MM-yyyy'}}</td>
+                <td>{{manager.contactNumber}}</td>
+                <td>{{manager.email}}</td>
+                <td>{{manager.isActive ? 'Yes' : 'No'}}</td>
+               <td >
+                    <ul style="list-style-type: none;;" *ngIf="manager.managerTrainers && manager.managerTrainers.length > 0">
+                        <li *ngFor="let mt of manager.managerTrainers">
+                        {{ mt.name }} - (Joined: {{ mt.joiningDate | date : 'shortDate' }})
+                        </li>
+                    </ul>
+                    <span *ngIf="!manager.managerTrainers || manager.managerTrainers.length === 0">No trainers assigned</span>
+                </td>
+                <td>
+                    <a [routerLink]="['/details',manager.managerId]" class="btn btn-outline-info btn-sm me-1"><i class="fa-solid fa-eye"></i></a>
+                    <a [routerLink]="['/edit',manager.managerId]" class="btn btn-outline-success btn-sm me-1"><i class="fas fa-edit"></i></a>
+                    <button class="btn btn-outline-danger btn-sm" (click)="deleteManager(manager.managerId)"><i class="fas fa-trash-alt"></i></button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+</div>
+<ng-template #noManagers>
+  <p>No managers found.</p>
+</ng-template>
+

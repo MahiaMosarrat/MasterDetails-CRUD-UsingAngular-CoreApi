@@ -1,0 +1,78 @@
+<div class="hero-wrapper">
+  <div class="overlay"></div>
+  <div class="hero-content glass-box text-white text-center px-4 py-5">
+    <h1 class="display-3 fw-bold mb-3 animate-fade-in">Player Management System</h1>
+    <p class="lead mb-3 animate-fade-in delay-1s">Seamlessly manage manager, trainer, player profiles, manager with trainer assignment, training schedules, and performance.</p>
+    <hr class="border-light w-50 mx-auto mb-4 animate-fade-in delay-2s">
+    <p class="mb-4 animate-fade-in delay-3s">Get started now to add, view, or update players and their training assignments.</p>
+    <a routerLink="/managers" class="btn btn-light text-dark fw-bold px-4 py-2 animate-fade-in delay-4s">Get Started</a>
+  </div>
+</div>
+
+<style>
+  .hero-wrapper {
+  position: relative;
+  background-image: url('/images/player.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  overflow: hidden;
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(10, 10, 10, 0.5); /* dark overlay */
+  z-index: 1;
+}
+
+.glass-box {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  backdrop-filter: blur(10px);
+  padding: 3rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  max-width: 800px;
+  margin: auto;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.btn-light:hover {
+  background-color: #f8f9fa !important;
+  color: #0056b3 !important;
+  transform: scale(1.05);
+  transition: 0.3s ease;
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeInUp 1s ease forwards;
+  opacity: 0;
+}
+
+.delay-1s { animation-delay: 0.5s; }
+.delay-2s { animation-delay: 1s; }
+.delay-3s { animation-delay: 1.5s; }
+.delay-4s { animation-delay: 2s; }
+</style>

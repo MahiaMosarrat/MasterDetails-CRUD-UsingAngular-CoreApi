@@ -1,0 +1,148 @@
+<div class="container mt-4">
+  <div class="card shadow-sm">
+
+    <div class="card-header text-white text-center py-4" style="background: linear-gradient(to right, #222f3e, #3399ff);">
+      <h2 class="fw-bold mb-0">
+        <i class="fas fa-user-edit me-2"></i> {{ isEditMode ? 'Edit Manager' : 'Create New Manager' }}
+      </h2>
+    </div>
+
+    <div class="card-body">
+      <form [formGroup]="managerForm" (ngSubmit)="onSubmit()">
+        <div class="row">
+          <div class="col-md-6 pe-md-3">
+            <h5 class="mb-3">Manager Details</h5>
+            <div class="mb-3">
+              <label for="name" class="form-label">Manager Name <span class="text-danger">*</span></label>
+              <input type="text" id="name" formControlName="name" class="form-control rounded"
+                [ngClass]="{ 'is-invalid': isControlInvalid('name') }">
+              <div *ngIf="isControlInvalid('name')" class="invalid-feedback">
+                Manager Name is required.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="dob" class="form-label">Date of Birth <span class="text-danger">*</span></label>
+              <input type="date" id="dob" formControlName="dob" class="form-control rounded"
+                [ngClass]="{ 'is-invalid': isControlInvalid('dob') }">
+              <div *ngIf="isControlInvalid('dob')" class="invalid-feedback">
+                Date of Birth is required.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="contactNumber" class="form-label">Contact No <span class="text-danger">*</span></label>
+              <input type="text" id="contactNumber" formControlName="contactNumber" class="form-control rounded"
+                [ngClass]="{ 'is-invalid': isControlInvalid('contactNumber') }">
+              <div *ngIf="isControlInvalid('contactNumber')" class="invalid-feedback">
+                Contact Number is required.
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="email" class="form-label">Email <span class="text-danger">*</span></label>
+              <input type="email" id="email" formControlName="email" class="form-control rounded"
+                [ngClass]="{ 'is-invalid': isControlInvalid('email') }">
+              <div *ngIf="isControlInvalid('email')" class="invalid-feedback">
+                <span *ngIf="managerForm.get('email')?.errors?.['required']">Email is required.</span>
+                <span *ngIf="managerForm.get('email')?.errors?.['email']">Please enter a valid email address.</span>
+              </div>
+            </div>
+
+            <div class="mb-3 form-check">
+              <input type="checkbox" id="isActive" formControlName="isActive" class="form-check-input">
+              <label for="isActive" class="form-check-label">Is Active?</label>
+            </div>
+
+            <div class="mb-3">
+              <div *ngIf="imagePreviewUrl" class="mt-2">
+                <p class="mb-1 text-muted">Image Preview:</p>
+                <img [src]="imagePreviewUrl" class="img-thumbnail rounded"
+                  style="max-width: 60px; height: auto;">
+              </div>
+              <div *ngIf="!imagePreviewUrl && isEditMode && currentPicture" class="mt-2">
+                <p class="mb-1 text-muted">Current Saved Picture:</p>
+                <img [src]="imageUrlBase + currentPicture" alt="Current Manager Picture" class="img-thumbnail rounded"
+                  style="max-width: 60px; height: auto;">
+              </div>
+              <label for="pictureFile" class="form-label">Picture</label>
+              <input type="file" id="pictureFile" class="form-control rounded" (change)="onFileSelected($event)"
+                accept="image/*">
+              <small class="form-text text-muted">Upload manager's picture (optional).</small>
+            </div>
+          </div>
+
+          <div class="col-md-6 ps-md-3">
+            <h5 class="mb-3">Manager Trainer Assignment</h5>
+            <div formArrayName="managerTrainerAssignments">
+              <div class="table-responsive border rounded">
+                <table class="table table-bordered table-hover align-middle mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th scope="col" class="col-5">Trainer Name <span class="text-danger">*</span></th>
+                      <th scope="col" class="col-5">Joining Date <span class="text-danger">*</span></th>
+                      <th scope="col" class="col-2 text-center">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <ng-container *ngIf="managerTrainerAssignments.controls.length > 0; else noAssignmentsAdded">
+                      <tr *ngFor="let trainerGroup of managerTrainerAssignments.controls; let i = index"
+                        [formGroupName]="i">
+                        <td>
+                          <label [for]="'trainer' + i" class="visually-hidden">Trainer</label>
+                          <select [id]="'trainer' + i" formControlName="trainerId" class="form-select rounded"
+                            [ngClass]="{ 'is-invalid': isAssignmentControlInvalid(i, 'trainerId') }">
+                            <option [ngValue]="0" disabled>Select a Trainer</option>
+                            <option *ngFor="let trainer of trainers" [ngValue]="trainer.trainerId">{{ trainer.name }}
+                            </option>
+                          </select>
+                          <div *ngIf="isAssignmentControlInvalid(i, 'trainerId')" class="invalid-feedback">
+                            Trainer is required.
+                          </div>
+                        </td>
+                        <td>
+                          <label [for]="'joiningDate' + i" class="visually-hidden">Joining Date</label>
+                          <input type="date" [id]="'joiningDate' + i" formControlName="joiningDate"
+                            class="form-control rounded"
+                            [ngClass]="{ 'is-invalid': isAssignmentControlInvalid(i, 'joiningDate') }">
+                          <div *ngIf="isAssignmentControlInvalid(i, 'joiningDate')" class="invalid-feedback">
+                            Joining Date is required.
+                          </div>
+                        </td>
+                        <td class="text-center">
+                          <button type="button" class="btn btn-outline-danger btn-sm rounded"
+                            (click)="removeManagerTrainerAssignment(i)">
+                            <i class="fas fa-trash"></i> Remove
+                          </button>
+                        </td>
+                      </tr>
+                    </ng-container>
+                    <ng-template #noAssignmentsAdded>
+                      <tr>
+                        <td colspan="3" class="text-center py-4">
+                          <div class="alert alert-info mb-0 rounded" role="alert">
+                            No assignments added. Click "Add Assignment" to add one.
+                          </div>
+                        </td>
+                      </tr>
+                    </ng-template>
+                  </tbody>
+                </table>
+              </div>
+
+              <button type="button" class="btn btn-outline-primary mt-3 rounded" (click)="addManagerTrainerAssignment()">
+               Add Assignment
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="mt-4 pt-3 border-top">
+          <button type="submit" class="btn btn-success me-2 rounded">
+            {{ isEditMode ? 'Update' : 'Create' }}
+          </button>
+           <a routerLink="/managers" class="btn btn-secondary">Back to List</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
